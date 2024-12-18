@@ -19,7 +19,6 @@ pub mod simulation {
     /// Duration in seconds
     /// Client delay in milliseconds
     pub async fn simulation(duration : u64, client_delay : u64, node_count : u64) -> Result<(), String> {
-
         let rng = &mut rand::thread_rng();
         let timeout_duration = std::time::Duration::from_secs(duration);
 
@@ -120,6 +119,7 @@ pub mod simulation {
                 chain.get_main_chain().await?
             );
         }
+
         let edit_score = Blockchain::chains_edit_score(
             main_chains.iter().map(|blocks| {
                 blocks.iter().map(|block| block.hash.clone()).collect::<Vec<String>>()
@@ -131,16 +131,13 @@ pub mod simulation {
         assert!(edit_score > 0.9);
 
         Ok(())
-
     }
 
 
     /// TODO [S2]
     #[tokio::test]
     async fn test_simulation() -> Result<(), String> {
-
         simulation(60, 50, 5).await?;
         Ok(())
-
     }
 }
