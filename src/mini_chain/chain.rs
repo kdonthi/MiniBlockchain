@@ -154,25 +154,26 @@ impl BlockchainOperations for Blockchain {
     }
 
     async fn get_main_chain(&self) -> Result<Vec<Block>, String> {
-        let mut max_length = -1;
+        let mut max_length: usize = 0;
         let mut head_block: Option<Block> = None;
 
         for (_, (block, prev_blocks)) in &self.blocks {
             let curr_len = prev_blocks.len();
-            if max_length < curr_len {
-                max_length = curr_len;
+            if max_length < curr_len + 1 {
+                max_length = curr_len + 1;
                 head_block = Some(block.clone());
             }
         }
-        if max_length == -1 || head_block.is_none() {
+        if max_length == 0 || head_block.is_none() {
             return Err("No blocks seen".to_string())
         }
 
         let mut block_list: Vec<Block> = Vec::new();
         while let Some(blk) = head_block {
+            let prev_hash = blk.previous_hash.clone();
+
             block_list.push(blk);
 
-            let prev_hash = blk.previous_hash.clone();
             match self.blocks.get(prev_hash.as_str()) {
                Some((prev_block, _)) => {
                    block_list.push(prev_block.clone());
