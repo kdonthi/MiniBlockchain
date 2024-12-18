@@ -51,9 +51,7 @@ pub enum Argument {
 
 impl Argument {
     pub fn random<R: Rng>(rng: &mut R, depth: u64) -> Self {
-
-        // TODO [W2]: This is wrong. Prevent this from blowing the stack.
-        let partition = if depth > 0 { 9 } else { 8 }; 
+        let partition = if depth >= 6 {9} else {7};
 
         match rng.gen_range(0..partition) {
             0 => Argument::U8(rng.gen()),
@@ -313,7 +311,13 @@ impl Block {
 
     // TODO [P1]: Implement proof of work for a difficulty (leading zeros).
     pub fn verify_proof_of_work(&self, difficulty: usize) -> bool {
-        false
+        let mut char_array = Vec::new();
+        for _i in 0..difficulty {
+            char_array.push("0");
+        }
+        let pattern: String = String::from_iter(char_array);
+
+        self.hash.starts_with(pattern.as_str())
     }
 
     pub fn compute_slot_number(&self, slot_secs : u64) -> u64 {
