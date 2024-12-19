@@ -157,15 +157,19 @@ impl BlockchainOperations for Blockchain {
         let mut longest_chain_len: usize = 0;
         let mut head_block: Option<Block> = None;
 
-        for (_, (_, prev_blocks)) in &self.blocks {
+        for (_, (parent, prev_blocks)) in &self.blocks {
             let curr_len = prev_blocks.len();
             if longest_chain_len < curr_len + 1 || curr_len == 0 {
-                longest_chain_len = curr_len;
+                longest_chain_len = curr_len + 1;
                 for hash in prev_blocks {
                     if self.leaves.contains(hash) {
                         let ((potential_head_block, _)) = self.blocks.get(hash).unwrap();
                         head_block = Some(potential_head_block.clone());
                     }
+                }
+
+                if head_block.is_none() {
+                    head_block = Some(parent.clone());
                 }
             }
         }
