@@ -154,29 +154,32 @@ impl BlockchainOperations for Blockchain {
     }
 
     async fn get_main_chain(&self) -> Result<Vec<Block>, String> {
-        let mut max_length: usize = 0;
+        let mut longest_chain_len: usize = 0;
         let mut head_block: Option<Block> = None;
 
-        for (_, (block, prev_blocks)) in &self.blocks {
+        for (_, (_, prev_blocks)) in &self.blocks {
             let curr_len = prev_blocks.len();
-            if max_length < curr_len + 1 {
-                max_length = curr_len + 1;
-                head_block = Some(block.clone());
+            if longest_chain_len < curr_len + 1 || curr_len == 0 {
+                longest_chain_len = curr_len;
+                for hash in prev_blocks {
+                    if self.leaves.contains(hash) {
+                        let ((potential_head_block, _)) = self.blocks.get(hash).unwrap();
+                        head_block = Some(potential_head_block.clone());
+                    }
+                }
             }
         }
-        if max_length == 0 || head_block.is_none() {
-            return Err("No blocks seen".to_string())
+        if head_block.is_none() {
+            return Ok(Vec::new())
         }
 
         let mut block_list: Vec<Block> = Vec::new();
         while let Some(blk) = head_block {
             let prev_hash = blk.previous_hash.clone();
-
             block_list.push(blk);
 
             match self.blocks.get(prev_hash.as_str()) {
                Some((prev_block, _)) => {
-                   block_list.push(prev_block.clone());
                    head_block = Some(prev_block.clone());
                }
                None => {
@@ -361,6 +364,8 @@ mod test {
             &mut rand::thread_rng(), 
             slot_secs
         );
+
+        println!("First block {}", first_block.hash);
         blockchain.add_block(first_block.clone()).await.unwrap();
         let tip_one = blockchain.get_chain_tip().await.unwrap().unwrap();
         assert_eq!(tip_one.calculate_hash(), first_block.calculate_hash());
@@ -370,8 +375,18 @@ mod test {
             &mut rand::thread_rng(), 
             slot_secs
         );
+
+        println!("Second block {}", second_block.hash);
+
         second_block.previous_hash = blockchain.get_chain_tip().await.unwrap().unwrap().hash.clone();
         blockchain.add_block(second_block.clone()).await.unwrap();
+
+        let mut ctr = 0;
+        for (block, prev_blocks) in &blockchain.blocks {
+            println!("Block {}: {}", ctr, block);
+            ctr += 1;
+        }
+
         let tip_two = blockchain.get_chain_tip().await.unwrap().unwrap();
         assert_eq!(tip_two.calculate_hash(), second_block.calculate_hash());
        
@@ -386,7 +401,6 @@ mod test {
         previous_hash: String,
         depth: usize
     ) -> Result<usize, String> {
-        
         if depth == 0 {
             return Ok(0);
         }
@@ -410,7 +424,6 @@ mod test {
             rng_guard.gen::<f32>() < 0.7
         };
         
-
         let mut left_length = 0;
         let mut right_length = 0;
 

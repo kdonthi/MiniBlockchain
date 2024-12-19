@@ -883,7 +883,8 @@ impl FullNode for ChannelFullNode {}
 
 #[cfg(test)]
 mod test {
-
+    use std::hash::Hash;
+    use std::ops::Add;
     use super::*;
     use std::sync::Arc;
     use tokio::sync::mpsc::{self, Sender, Receiver};
