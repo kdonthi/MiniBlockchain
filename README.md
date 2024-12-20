@@ -240,13 +240,13 @@ async fn get_main_chain(&self) -> Result<Vec<Block>, String> {
 Make the simulations pass the benchmarks.
 ##### [S1]
 Generate passing output from the full node simulation in `mini_chain/node.rs`. Provide a screenshot of your final chain and an intermediate chain below.
-![Screenshot 2024-12-19 at 4.55.02 PM.png](..%2F..%2F..%2F..%2Fvar%2Ffolders%2Fpb%2F5zq08_yj5bb0drbrq_4m2yrc0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_Skk8KH%2FScreenshot%202024-12-19%20at%204.55.02%E2%80%AFPM.png)
-![Screenshot 2024-12-19 at 4.56.16 PM.png](..%2F..%2F..%2F..%2Fvar%2Ffolders%2Fpb%2F5zq08_yj5bb0drbrq_4m2yrc0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_H1Y4hU%2FScreenshot%202024-12-19%20at%204.56.16%E2%80%AFPM.png)
-![Screenshot 2024-12-19 at 5.04.10 PM.png](..%2F..%2F..%2F..%2Fvar%2Ffolders%2Fpb%2F5zq08_yj5bb0drbrq_4m2yrc0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_02Yr3C%2FScreenshot%202024-12-19%20at%205.04.10%E2%80%AFPM.png)
+
 ##### [S2]
 Generate passing output from the network simulation in `lib.rs`. Provide a screenshot of your final chain and an intermediate chain below.
-![Screenshot 2024-12-19 at 5.32.32 PM.png](..%2F..%2FDesktop%2FScreenshot%202024-12-19%20at%205.32.32%E2%80%AFPM.png)
-![Screenshot 2024-12-19 at 5.31.06 PM.png](..%2F..%2F..%2F..%2Fvar%2Ffolders%2Fpb%2F5zq08_yj5bb0drbrq_4m2yrc0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_DiYMmh%2FScreenshot%202024-12-19%20at%205.31.06%E2%80%AFPM.png)
+![Screenshot 2024-12-19 at 5 47 55 PM](https://github.com/user-attachments/assets/9383667a-2403-4cac-9491-4364ff5da7f5)
+![Screenshot 2024-12-19 at 5 48 27 PM](https://github.com/user-attachments/assets/3dbf8978-e502-4a96-b2ef-d4ca1247ad9b)
+![Screenshot 2024-12-19 at 5 48 42 PM](https://github.com/user-attachments/assets/8f72a2e2-152c-4394-a481-1d3706078257)
+
 #### Rustacean Station
 Answer these Rust-oriented questions. Answer in the space below each question.
 
