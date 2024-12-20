@@ -240,6 +240,9 @@ async fn get_main_chain(&self) -> Result<Vec<Block>, String> {
 Make the simulations pass the benchmarks.
 ##### [S1]
 Generate passing output from the full node simulation in `mini_chain/node.rs`. Provide a screenshot of your final chain and an intermediate chain below.
+![Screenshot 2024-12-19 at 5 50 47 PM](https://github.com/user-attachments/assets/97120880-7d24-4fe1-a038-cd41e68a46e8)
+![Screenshot 2024-12-19 at 5 51 07 PM](https://github.com/user-attachments/assets/b46c5afe-5726-4da5-b1d6-c659c12d3008)
+![Screenshot 2024-12-19 at 5 51 46 PM](https://github.com/user-attachments/assets/18791c54-ca09-4e79-9490-e42d87b6bffe)
 
 ##### [S2]
 Generate passing output from the network simulation in `lib.rs`. Provide a screenshot of your final chain and an intermediate chain below.
