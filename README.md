@@ -215,7 +215,7 @@ impl Argument {
 Programming tasks.
 
 ##### [P1]
-We have not implemented verification for proof of work. Implement this using a leading-zeros alg.
+We have not implemented verification for proof of work. Implement this using a leading-zeros alg. x
 ```rust
 // TODO [P1]: Implement proof of work verification for a difficulty (leading zeros).
 pub fn verify_proof_of_work(&self, difficulty: usize) -> bool {
@@ -224,7 +224,7 @@ pub fn verify_proof_of_work(&self, difficulty: usize) -> bool {
 ```
 
 ##### [P2]
-Implement your favorite chain selection alg. Remember, we store a block tree as an adjacency matrix in a `HashSet`. 
+Implement your favorite chain selection alg. Remember, we store a block tree as an adjacency matrix in a `HashSet`. x
 
 **HINT:** Longest chain is likely the most reasonable alg to implement.
 ```rust
@@ -240,10 +240,13 @@ async fn get_main_chain(&self) -> Result<Vec<Block>, String> {
 Make the simulations pass the benchmarks.
 ##### [S1]
 Generate passing output from the full node simulation in `mini_chain/node.rs`. Provide a screenshot of your final chain and an intermediate chain below.
-
+![Screenshot 2024-12-19 at 4.55.02 PM.png](..%2F..%2F..%2F..%2Fvar%2Ffolders%2Fpb%2F5zq08_yj5bb0drbrq_4m2yrc0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_Skk8KH%2FScreenshot%202024-12-19%20at%204.55.02%E2%80%AFPM.png)
+![Screenshot 2024-12-19 at 4.56.16 PM.png](..%2F..%2F..%2F..%2Fvar%2Ffolders%2Fpb%2F5zq08_yj5bb0drbrq_4m2yrc0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_H1Y4hU%2FScreenshot%202024-12-19%20at%204.56.16%E2%80%AFPM.png)
+![Screenshot 2024-12-19 at 5.04.10 PM.png](..%2F..%2F..%2F..%2Fvar%2Ffolders%2Fpb%2F5zq08_yj5bb0drbrq_4m2yrc0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_02Yr3C%2FScreenshot%202024-12-19%20at%205.04.10%E2%80%AFPM.png)
 ##### [S2]
 Generate passing output from the network simulation in `lib.rs`. Provide a screenshot of your final chain and an intermediate chain below.
-
+![Screenshot 2024-12-19 at 5.32.32 PM.png](..%2F..%2FDesktop%2FScreenshot%202024-12-19%20at%205.32.32%E2%80%AFPM.png)
+![Screenshot 2024-12-19 at 5.31.06 PM.png](..%2F..%2F..%2F..%2Fvar%2Ffolders%2Fpb%2F5zq08_yj5bb0drbrq_4m2yrc0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_DiYMmh%2FScreenshot%202024-12-19%20at%205.31.06%E2%80%AFPM.png)
 #### Rustacean Station
 Answer these Rust-oriented questions. Answer in the space below each question.
 
