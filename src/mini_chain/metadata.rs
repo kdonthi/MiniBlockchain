@@ -101,7 +101,7 @@ impl BlockchainMetadata {
             block_size: 256,
             maximum_proposer_time: 1,
             mempool_reentrancy_secs: 2,
-            transaction_expiry_secs: 16,
+            transaction_expiry_secs: 40,
             difficulty: 2,
             proposer_wait_ms : 100
         }
