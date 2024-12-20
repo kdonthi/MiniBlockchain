@@ -258,8 +258,15 @@ In this crate, we use `async_channel` which is a multiple-produce, multiple-cons
 
 **HINT:** How is a receiver consumed?
 
+We could only have a single consumer because the mpsc::Receiver is not thread-safe, since it does not have a mutex, unlike async_channel, and cannot prevent multiple threads from accessing it at the same time.
+This can lead to data races if multiple threads try to consume messages concurrently, as mpsc does not manage which thread gets access.
+
 ##### [R2]
 Compare and contrast the approaches to conditional traits used in `mini_chain/node.rs` and `mini_chain/mempool.rs`.
+
+In `node.rs`, in the example of `FullNode`, we make up the traits that the FullNode represents by combining multiple small traits 
+into a single trait to be able to be a bit more reusable, but in `mempool.rs`, we use explicit implementations with
+generics to specify the behavior for a particular type, to be more flexible for type-specific operations.
 
 ##### [R3]
 Identify the pattern that is forced by the definition of the Verifier trait--assuming the Verifier would in fact mutate state.
@@ -289,6 +296,9 @@ pub trait Verifier {
 
 }
 ```
+The Verifier trait is like an abstract class where some of the function definitions have to be implemented and and enforcing a sequential order for processing blocks.
+In addition, the state mutation is confined to just the `synchronize_chain` function and it is forced to happen sequentially after block verification, which forces the verification
+and state changes to be seperated. Finally, the methods provided cannot mutate the state of the actual struct, only the block that is passed through to the Verifier.
 
 ##### [R4]
 Explain how the `broadcast_message` function works in our `Network` simulator. Reference the functionality of `Sender` and `Receiver`.
@@ -322,14 +332,24 @@ pub async fn broadcast_message<T: Clone + Send + Debug + 'static>(
 }
 ```
 
+We get a message from the `ingress_receiver` channel, which we get through exclusive access through the `RwLock`, 
+and copies and broadcasts it to multiple different places asynchronously using the `egress_senders` channels.
+We even simulate real world scenarios by introducing randomized delays (`introduce_latency()`) and dropping messages (`should_drop()`) 
+randomly according to a configured drop rate.
+
 #### Blockchainceptual
 Conceptual questions about the blockchain. Answer in the space below each question.
 
 ##### [C1]
 What effect should we expect changing the number of transactions in a block to have on our Blockchain? Would it help or hurt temporary forking?
 
+Increasing the number of transactions allows us to have higher throughput but also increases the load on the blockchain for each block. Increasing block size hurts temporary forking,
+because it increases the cost of re-mining and decreases the incentive for nodes to build on a side chain.
+
 ##### [C2]
 What would happen if we did not initialize the chain representations with a genesis block?
+
+It would be like trying to have a tree without its root node; it would become challenging to manage any forks or verify any new blocks without having a previous hash to reference. 
 
 ##### [C3]
 One of our simulation benchmarks was the chains' edit score. What qualities of our network does this best measure (if any)? Is there a better way to measure something similar.
@@ -355,11 +375,29 @@ fn chains_edit_score(main_chains : Vec<Vec<String>>) -> f64 {
 }
 ```
 
+The edit score measures how similar the block sequences are, and it means that blocks propagate quickly through the network and that forks are resolved quickly when they occur. Some of the specific traits might be:
+1. low `fork_resolution_slots` - the chain doesn't take too much time in resolving a fork, which reduces the amount of forks that exist
+2. low `slot_secs` - each block is propagated more quickly
+3. high `transaction_expiry_secs` - transactions have more time before they are removed from the mempool, which allows gives nodes more of an opportunity to include them in a block and reduce the transaction set variance between blocks 
+
+Two metrics that could be useful to measure fork resolution would be to measure *leaf count variance* across different nodes
+to measure fork resolution efficiency. Another interesting metric to use in conjunction is *transaction set overlap* 
+across blocks mined in the same slot to measure transaction propagation consistency.
+
 ##### [C4]
 Explain why we request blocks that are referenced by an incoming block but that we don't have in our chain. Why don't we just ignore them?
 
+This missing blocks might be part of a longer chain that we don't know about, and even if they are currently not part of the canonical main chain,
+if we ever reorg and need to make that our new main chain, without the preexisting block data, we would suffer from falling out of sync and missing 
+important updates.
+
 ##### [C5]
 Our blockchain works with a notion of time slots. Why should we expect consensus about when these slots start and end?
+
+In a blockchain, there is no global concept of time, so nodes need to agree on a shared framework for coordination.
+Time slots serve as a Schelling/focal point to establish when and how quickly blocks are added to the chain. This ensures 
+consistent block processing, reduces discrepancies in agreeing on the canonical head, and prevents forks caused by groups 
+of nodes with similar processing times forming an effective partition from the rest of the network.
 
 **HINT**: Thomas Schelling.
 # MiniBlockchain
