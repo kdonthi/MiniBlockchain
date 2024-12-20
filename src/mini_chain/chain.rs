@@ -154,44 +154,32 @@ impl BlockchainOperations for Blockchain {
     }
 
     async fn get_main_chain(&self) -> Result<Vec<Block>, String> {
-        let mut longest_chain_len: usize = 0;
-        let mut head_block: Option<Block> = None;
+        let mut longest_chain_len = 0;
+        let mut longest_chain: Vec<Block> = Vec::new();
 
-        for (_, (parent, prev_blocks)) in &self.blocks {
-            let curr_len = prev_blocks.len();
-            if longest_chain_len < curr_len + 1 || curr_len == 0 {
-                longest_chain_len = curr_len + 1;
-                for hash in prev_blocks {
-                    if self.leaves.contains(hash) {
-                        let ((potential_head_block, _)) = self.blocks.get(hash).unwrap();
-                        head_block = Some(potential_head_block.clone());
-                    }
-                }
+        for leaf in &self.leaves {
+            let mut block_vec: Vec<Block> = Vec::new();
+            let mut hash: String = leaf.clone();
 
-                if head_block.is_none() {
-                    head_block = Some(parent.clone());
+            loop {
+                let (block, _): &(Block, HashSet<String>) = self.blocks.get(&hash)
+                    .expect(format!("can't find block for {}", hash).as_str());
+                block_vec.push(block.clone());
+
+                hash = block.previous_hash.clone();
+                if hash.is_empty() {
+                    break
                 }
             }
-        }
-        if head_block.is_none() {
-            return Ok(Vec::new())
-        }
 
-        let mut block_list: Vec<Block> = Vec::new();
-        while let Some(blk) = head_block {
-            let prev_hash = blk.previous_hash.clone();
-            block_list.push(blk);
-
-            match self.blocks.get(prev_hash.as_str()) {
-               Some((prev_block, _)) => {
-                   head_block = Some(prev_block.clone());
-               }
-               None => {
-                   break;
-               }
+            let block_vec_len = block_vec.len();
+            if block_vec_len > longest_chain_len {
+                longest_chain_len = block_vec_len;
+                longest_chain = block_vec;
             }
         }
-        return Ok(block_list);
+
+        Ok(longest_chain)
     }
 
     async fn resolve_chain(&mut self) -> Result<(), String> {
