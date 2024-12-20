@@ -98,10 +98,10 @@ impl BlockchainMetadata {
             query_slots: 4,
             slot_secs: 2,
             fork_resolution_slots : 8,
-            block_size: 128,
+            block_size: 256,
             maximum_proposer_time: 1,
             mempool_reentrancy_secs: 2,
-            transaction_expiry_secs: 8,
+            transaction_expiry_secs: 16,
             difficulty: 2,
             proposer_wait_ms : 100
         }
